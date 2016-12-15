@@ -53,7 +53,7 @@ Date.prototype.percentOf = function(unit) {
   if (unit == 'hrs') return percent(3600, this.getSecondsOfHour());
   if (unit == 'day') return percent(3600 * 24, this.getSecondsOfDay());
   if (unit == 'week') return percent(86400 * 7, this.getSecondsOfWeek());
-  if (unit == 'mon') return percent(30 * 86400, this.getSecondsOfMonth());
+  if (unit == 'mon') return percent(this.getMonthDays() * 86400, this.getSecondsOfMonth());
   if (unit == 'yrs') return percent(this.getYearDays() * 86400, this.getSecondsOfYear());
 };
 
