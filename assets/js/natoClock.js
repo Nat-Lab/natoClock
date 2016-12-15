@@ -5,7 +5,8 @@ window.NatoClock = function(canvas, config) {
       color = config.color || '#fefefe',
       colors = config.colors || {},
       background = config.background || '#333',
-      txtcolor = config.txtcolor || 'rgba(255,255,255,0.5)';
+      txtcolor = config.txtcolor || 'rgba(255,255,255,0.5)',
+      acceleration = config.acceleration || 2.5;
 
   var rafid;
 
@@ -55,7 +56,7 @@ window.NatoClock = function(canvas, config) {
         color = _config.color,
         percent = 0,
         k = 0,
-        g = 9.8,
+        g = acceleration,
         goBack = false;
     var update = function () { // code from @ljyloo, @magicnat edited.
       var d = new Date();

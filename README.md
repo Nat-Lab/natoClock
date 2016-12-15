@@ -32,6 +32,7 @@ var cfg = {
   background: '#333', // 畫布背景色
   noRafFps: 60, // RAF 不可用時的 FPS。
   txtcolor: 'rgba(255,255,255,0.5)', // 文本顏色。
+  acceleration: 2.3, // 回彈的加速度。
   colors: {
     min: '#F25F5C',
     hrs: '#FF9B66',
