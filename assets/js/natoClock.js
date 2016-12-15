@@ -1,5 +1,4 @@
 window.NatoClock = function(canvas, config) {
-  config = config || {};
   var frame = 100 / 60;
   var width = config.width || 500,
       height = config.height || 500,
@@ -67,12 +66,17 @@ window.NatoClock = function(canvas, config) {
        if (goBack) {
          k += frame;
          var de = (k / 100) * (k / 100) * g;
-         if ((percent - de) > 0)
+         if ((percent - de) > 0.1)
            percent -= de;
          else {
-           k = 0;
-           percent = newPercent;
-           goBack = false;
+           if (d.getSeconds() > 0){
+             k = 0;
+             percent = newPercent;
+             goBack = false;
+           }
+           else {
+             percent = 0.1;
+           }
          }
        }
        else {
