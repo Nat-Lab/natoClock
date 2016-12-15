@@ -47,12 +47,21 @@ Date.prototype.getSecondsOfYear = function () {
   return this.getSecondsOfDay() + 86400 * (this.getDayOfYear() - 1);
 };
 
-Date.prototype.percentOf = function(type) {
-  var precent = function(part, full) { return (full/part) };
-  if (type == 'min') return precent(60000, this.getMilliseconds() + 1000 * this.getSeconds() - 1);
-  if (type == 'hrs') return precent(3600, this.getSecondsOfHour());
-  if (type == 'day') return precent(3600 * 24, this.getSecondsOfDay());
-  if (type == 'week') return precent(86400 * 7, this.getSecondsOfWeek());
-  if (type == 'mon') return precent(30 * 86400, this.getSecondsOfMonth());
-  if (type == 'yrs') return precent(this.getYearDays() * 86400, this.getSecondsOfYear());
+Date.prototype.percentOf = function(unit) {
+  var percent = function(part, full) { return (full/part) };
+  if (unit == 'min') return percent(60000, this.getMilliseconds() + 1000 * this.getSeconds() - 1);
+  if (unit == 'hrs') return percent(3600, this.getSecondsOfHour());
+  if (unit == 'day') return percent(3600 * 24, this.getSecondsOfDay());
+  if (unit == 'week') return percent(86400 * 7, this.getSecondsOfWeek());
+  if (unit == 'mon') return percent(30 * 86400, this.getSecondsOfMonth());
+  if (unit == 'yrs') return percent(this.getYearDays() * 86400, this.getSecondsOfYear());
+};
+
+Date.prototype.isFinished = function (unit) {
+  if (unit == 'min') return (this.getSeconds() >= 59);
+  if (unit == 'hrs') return (this.getSecondsOfHour() >= 3599);
+  if (unit == 'day') return (this.getSecondsOfDay() >= 86399);
+  if (unit == 'week') return (this.getSecondsOfWeek() >= 604799);
+  if (unit == 'mon') return (this.getSecondsOfMonth() >= 2591999);
+  if (unit == 'yrs') return (this.getSecondsOfYear() >= ((this.getYearDays() * 86400) - 1));
 };

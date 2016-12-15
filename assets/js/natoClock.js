@@ -61,7 +61,7 @@ window.NatoClock = function(canvas, config) {
     var update = function () { // code from @ljyloo, @magicnat edited.
       var d = new Date();
       var newPercent = d.percentOf(unit) * 100;
-       if (100 - percent < 1)
+       if (d.isFinished(unit))
          goBack = true;
        if (goBack) {
          k += frame;
