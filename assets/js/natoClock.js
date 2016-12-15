@@ -1,4 +1,5 @@
 window.NatoClock = function(canvas, config) {
+  config = config || {};
   var frame = 100 / 60;
   var width = config.width || 500,
       height = config.height || 500,
