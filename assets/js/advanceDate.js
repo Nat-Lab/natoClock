@@ -47,7 +47,7 @@ Date.prototype.getSecondsOfYear = function () {
   return this.getSecondsOfDay() + 86400 * (this.getDayOfYear() - 1);
 };
 
-Date.prototype.precentOf = function(type) {
+Date.prototype.percentOf = function(type) {
   var precent = function(part, full) { return (full/part) };
   if (type == 'min') return precent(60000, this.getMilliseconds() + 1000 * this.getSeconds() - 1);
   if (type == 'hrs') return precent(3600, this.getSecondsOfHour());

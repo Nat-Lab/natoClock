@@ -43,7 +43,7 @@ window.NatoClock = function(canvas, config) {
     ctx.rotate(rot);
     ctx.font = ((14/600) * getMinEdge()) + 'px Arial Rounded MT Bold';
     var d = new Date();
-    ctx.fillText(d.precentOf(arc.class) * 100 | 0, (arc.r - (9/600)*minE), -5);
+    ctx.fillText(d.percentOf(arc.class) * 100 | 0, (arc.r - (9/600)*minE), -5);
     ctx.restore();
   }
 
@@ -54,7 +54,7 @@ window.NatoClock = function(canvas, config) {
     this.color = _config.color;
     this.getRot = function () {
       var d = new Date();
-      return d.precentOf(this.class) * (Math.PI * 2) - (Math.PI / 2);
+      return d.percentOf(this.class) * (Math.PI * 2) - (Math.PI / 2);
     }
   }
 
