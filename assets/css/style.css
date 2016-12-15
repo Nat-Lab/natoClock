@@ -3,3 +3,6 @@ body {
   padding: 0;
   background: #333;
 }
+canvas {
+  position: absolute;
+}

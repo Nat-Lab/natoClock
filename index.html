@@ -10,9 +10,17 @@
 </body>
 <script>
 var makeNc = function () {
-  return new NatoClock(document.getElementById('screen'), {
-    width: window.innerWidth,
-    height: window.innerHeight,
+  var size = innerWidth > innerHeight ? innerHeight : innerWidth,
+      left = Math.abs(innerWidth - size)/2,
+      top = Math.abs(innerHeight - size)/2;
+
+  var disp = document.getElementById('screen');
+  disp.style.top = top;
+  disp.style.left = left;
+
+  return new NatoClock(disp, {
+    width: size,
+    height: size,
     background: '#333',
     noRafFps: 60,
     txtcolor: 'rgba(255,255,255,0.5)',
