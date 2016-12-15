@@ -48,3 +48,7 @@ nc.start();
 ```
 
 要暫停繪製，使用：`nc.stop();`，要清空畫布並停止繪製，使用`nc.destroy();`。
+
+### 致谢
+
+[@ljyloo](https://github.com/ljyloo)：寫出了回彈的代碼。

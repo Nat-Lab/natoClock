@@ -1,4 +1,5 @@
 window.NatoClock = function(canvas, config) {
+  var frame = 100 / 60;
   var width = config.width || 500,
       height = config.height || 500,
       color = config.color || '#fefefe',
@@ -49,13 +50,43 @@ window.NatoClock = function(canvas, config) {
 
   /* arc constructor: build our arcs! */
   var Arc = function (_config) {
-    this.class = _config.class;
-    this.r = _config.radius;
-    this.color = _config.color;
-    this.getRot = function () {
+    var unit = _config.class,
+        r = _config.radius,
+        color = _config.color,
+        percent = 0,
+        k = 0,
+        g = 9.8,
+        goBack = false;
+    var update = function () { // code from @ljyloo, @magicnat edited.
       var d = new Date();
-      return d.percentOf(this.class) * (Math.PI * 2) - (Math.PI / 2);
+      var newPercent = d.percentOf(unit) * 100;
+       if (100 - percent < 1)
+         goBack = true;
+       if (goBack) {
+         k += frame;
+         var de = (k / 100) * (k / 100) * g;
+         if ((percent - de) > 0)
+           percent -= de;
+         else {
+           k = 0;
+           percent = newPercent;
+           goBack = false;
+         }
+       }
+       else {
+         percent = newPercent;
+       }
     }
+    getRot = function () {
+      update();
+      return percent * 0.01 * (Math.PI * 2) - (Math.PI / 2);
+    }
+    return {
+      getRot: getRot,
+      class: unit,
+      color: color,
+      r: r
+    };
   }
 
   var reset = function () {
