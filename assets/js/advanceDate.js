@@ -53,6 +53,6 @@ Date.prototype.percentOf = function(type) {
   if (type == 'hrs') return precent(3600, this.getSecondsOfHour());
   if (type == 'day') return precent(3600 * 24, this.getSecondsOfDay());
   if (type == 'week') return precent(86400 * 7, this.getSecondsOfWeek());
-  if (type == 'mon') return precent(30 * 86400, this.getSecondsOfMonth());
+  if (type == 'mon') return precent(this.getMonthDays() * 86400, this.getSecondsOfMonth());
   if (type == 'yrs') return precent(this.getYearDays() * 86400, this.getSecondsOfYear());
 };
