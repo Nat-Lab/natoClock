@@ -49,19 +49,19 @@ Date.prototype.getSecondsOfYear = function () {
 
 Date.prototype.percentOf = function(unit) {
   var percent = function(part, full) { return (full/part) };
-  if (unit == 'min') return percent(60000, this.getMilliseconds() + 1000 * this.getSeconds() - 1);
+  if (unit == 'min') return percent(60000, this.getMilliseconds() + 1000 * this.getSeconds());
   if (unit == 'hrs') return percent(3600, this.getSecondsOfHour());
   if (unit == 'day') return percent(3600 * 24, this.getSecondsOfDay());
   if (unit == 'week') return percent(86400 * 7, this.getSecondsOfWeek());
-  if (unit == 'mon') return percent(this.getMonthDays() * 86400, this.getSecondsOfMonth());
+  if (unit == 'mon') return percent(30 * 86400, this.getSecondsOfMonth());
   if (unit == 'yrs') return percent(this.getYearDays() * 86400, this.getSecondsOfYear());
 };
 
 Date.prototype.isFinished = function (unit) {
-  if (unit == 'min') return (this.getSeconds() >= 59);
+  if (unit == 'min') return ((this.getMilliseconds() + 1000 * this.getSeconds()) >= 59950);
   if (unit == 'hrs') return (this.getSecondsOfHour() >= 3599);
   if (unit == 'day') return (this.getSecondsOfDay() >= 86399);
   if (unit == 'week') return (this.getSecondsOfWeek() >= 604799);
-  if (unit == 'mon') return (this.getSecondsOfMonth() >= this.getMonthDays() * 86400 - 1);
-  if (unit == 'yrs') return (this.getSecondsOfYear() >= this.getYearDays() * 86400 - 1);
+  if (unit == 'mon') return (this.getSecondsOfMonth() >= ((this.getMonthDays() * 86400) - 1));
+  if (unit == 'yrs') return (this.getSecondsOfYear() >= ((this.getYearDays() * 86400) - 1));
 };
