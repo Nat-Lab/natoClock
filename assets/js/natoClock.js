@@ -1,7 +1,8 @@
-window.natoClock = function(canvas, config) {
+window.NatoClock = function(canvas, config) {
   var width = config.width || 500,
       height = config.height || 500,
-      colors = config.colors || '#fefefe',
+      color = config.color || '#fefefe',
+      colors = config.colors || {},
       background = config.background || '#333',
       txtcolor = config.txtcolor || 'rgba(255,255,255,0.5)';
 
@@ -38,7 +39,7 @@ window.natoClock = function(canvas, config) {
       ctx.beginPath();
       ctx.arc(shift, shift, this.r, (Math.PI/(2/3)), this.rot, false);
       ctx.lineWidth = getMinEdge()/2/10;
-      ctx.strokeStyle = colors;
+      ctx.strokeStyle = colors[this.class] || color;
       ctx.stroke();
       ctx.save();
       ctx.fillStyle = background;

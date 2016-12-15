@@ -10,13 +10,20 @@
 </body>
 <script>
 var makeNc = function () {
-  return new natoClock(document.getElementById('screen'), {
+  return new NatoClock(document.getElementById('screen'), {
     width: window.innerWidth,
     height: window.innerHeight,
-    colors: '#fefefe',
     background: '#333',
     noRafFps: 60,
-    txtcolor: 'rgba(255,255,255,0.5)'
+    txtcolor: 'rgba(255,255,255,0.5)',
+    colors: {
+      min: '#F25F5C',
+      hrs: '#FF9B66',
+      day: '#FFE066',
+      week: '#70C1B3',
+      mon: '#158CAF',
+      yrs: '#7C6FDE'
+    }
   });
 }
 
