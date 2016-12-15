@@ -1,0 +1,22 @@
+<html>
+<head>
+<link rel="stylesheet" href="assets/css/style.css">
+<script src="assets/js/advanceDate.js"></script>
+<script src="assets/js/natoClock.js"></script>
+</head>
+<body>
+<canvas id="screen"></canvas>
+</body>
+<script>
+var nc = new natoClock(document.getElementById('screen'), {
+  width: 600,
+  height: 600,
+  colors: '#fefefe',
+  background: '#333',
+  noRafFps: 60,
+  txtcolor: 'rgba(255,255,255,0.5)'
+});
+
+nc.start();
+</script>
+</html>
