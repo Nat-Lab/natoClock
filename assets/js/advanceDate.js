@@ -36,7 +36,9 @@ Date.prototype.getSecondsOfDay = function() {
 };
 
 Date.prototype.getSecondsOfWeek = function() {
-  return this.getSecondsOfDay() + 86400 * (this.getDay() - 1);
+  var d = this.getDay();
+  d = (d == 0 ? 7 : d);
+  return this.getSecondsOfDay() + 86400 * (d - 1);
 };
 
 Date.prototype.getSecondsOfMonth = function() {
@@ -48,7 +50,7 @@ Date.prototype.getSecondsOfYear = function () {
 };
 
 Date.prototype.percentOf = function(unit) {
-  var percent = function(part, full) { return (full/part) };
+  var percent = function(part, full) { return part == 0 ? 0 : (full/part) };
   if (unit == 'min') return percent(60000, this.getMilliseconds() + 1000 * this.getSeconds());
   if (unit == 'hrs') return percent(3600, this.getSecondsOfHour());
   if (unit == 'day') return percent(3600 * 24, this.getSecondsOfDay());
