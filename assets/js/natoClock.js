@@ -47,7 +47,7 @@ window.NatoClock = function(canvas, config) {
     ctx.font = ((14/600) * getMinEdge()) + 'px Arial Rounded MT Bold';
     var d = new Date(),
         p = d.percentOf(arc.class) * 100 | 0,
-        tS = p > 10 ? 8.5 : 5.5;
+        tS = p >= 10 ? 8.5 : 5.5;
     if(p > 0) ctx.fillText(p, (arc.r - (tS/600)*minE), -5);
     ctx.restore();
   }
