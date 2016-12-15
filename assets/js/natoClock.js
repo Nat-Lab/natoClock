@@ -27,28 +27,34 @@ window.NatoClock = function(canvas, config) {
   canvas.width = width;
   canvas.height = height;
 
+  /* Grapher: Graph our arc! */
+  var Grapher = function(arc) {
+    var minE = getMinEdge(),
+        shift = minE/2,
+        rot = arc.getRot();
+    ctx.beginPath();
+    ctx.arc(shift, shift, arc.r, (Math.PI/(2/3)), rot, false);
+    ctx.lineWidth = getMinEdge()/2/10;
+    ctx.strokeStyle = arc.color;
+    ctx.stroke();
+    ctx.save();
+    ctx.fillStyle = background;
+    ctx.translate(shift, shift);
+    ctx.rotate(rot);
+    ctx.font = ((14/600) * getMinEdge()) + 'px Arial Rounded MT Bold';
+    var d = new Date();
+    ctx.fillText(d.precentOf(arc.class) * 100 | 0, (arc.r - (9/600)*minE), -5);
+    ctx.restore();
+  }
+
   /* arc constructor: build our arcs! */
   var Arc = function (_config) {
     this.class = _config.class;
     this.r = _config.radius;
-    this.rot = 0;
-
-    this.draw = function() {
-      var minE = getMinEdge(),
-          shift = minE/2;
-      ctx.beginPath();
-      ctx.arc(shift, shift, this.r, (Math.PI/(2/3)), this.rot, false);
-      ctx.lineWidth = getMinEdge()/2/10;
-      ctx.strokeStyle = colors[this.class] || color;
-      ctx.stroke();
-      ctx.save();
-      ctx.fillStyle = background;
-      ctx.translate(shift, shift);
-      ctx.rotate(this.rot);
-      ctx.font = ((14/600) * getMinEdge()) + 'px Arial Rounded MT Bold';
+    this.color = _config.color;
+    this.getRot = function () {
       var d = new Date();
-      ctx.fillText(d.precentOf(this.class) * 100 | 0, (this.r - (9/600)*minE), -5);
-      ctx.restore();
+      return d.precentOf(this.class) * (Math.PI * 2) - (Math.PI / 2);
     }
   }
 
@@ -68,13 +74,7 @@ window.NatoClock = function(canvas, config) {
     ctx.fillText('week', (264/600)*minE, minE/2 - bars[2].r + 4);
     ctx.fillText('mon', (270/600)*minE, minE/2 - bars[1].r + 4);
     ctx.fillText('yrs', (274/600)*minE, minE/2 - bars[0].r + 4);
-
-    bars.forEach(function (bar) {
-      var d = new Date();
-      bar.rot = d.precentOf(bar.class) * (Math.PI * 2) - (Math.PI / 2); // you like math?
-      bar.draw();
-    });
-
+    bars.map(Grapher);
   }
 
   var mainloop = function() {
@@ -99,32 +99,38 @@ window.NatoClock = function(canvas, config) {
 
     bars.push(new Arc({
       class: 'yrs',
-      radius: (100/600) * getMinEdge()
+      radius: (100/600) * getMinEdge(),
+      color: colors.yrs || color
     }));
 
     bars.push(new Arc({
       class: 'mon',
-      radius: (135/600) * getMinEdge()
+      radius: (135/600) * getMinEdge(),
+      color: colors.mon || color
     }));
 
     bars.push(new Arc({
       class: 'week',
-      radius: (170/600) * getMinEdge()
+      radius: (170/600) * getMinEdge(),
+      color: colors.week || color
     }));
 
     bars.push(new Arc({
       class: 'day',
-      radius: (205/600) * getMinEdge()
+      radius: (205/600) * getMinEdge(),
+      color: colors.day || color
     }));
 
     bars.push(new Arc({
       class: 'hrs',
-      radius: (240/600) * getMinEdge()
+      radius: (240/600) * getMinEdge(),
+      color: colors.hrs || color
     }));
 
     bars.push(new Arc({
       class: 'min',
-      radius: (275/600) * getMinEdge()
+      radius: (275/600) * getMinEdge(),
+      color: colors.min || color
     }));
 
   };
