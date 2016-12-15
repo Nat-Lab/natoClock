@@ -5,6 +5,12 @@ window.natoClock = function(canvas, config) {
       background = config.background || '#333',
       txtcolor = config.txtcolor || 'rgba(255,255,255,0.5)';
 
+  var rafid;
+
+  var getMinEdge = function () {
+    return width > height ? height : width;
+  }
+
   /* requestAnimationFrame related works. */
   var getRaf = function () {
     var _raf = requestAnimationFrame || webkitRequestAnimationFrame || oRequestAnimationFrame || msRequestAnimationFrame;
@@ -26,27 +32,21 @@ window.natoClock = function(canvas, config) {
     this.r = _config.radius;
     this.rot = 0;
 
-    this.draw = function(){
+    this.draw = function() {
+      var minE = getMinEdge(),
+          shift = minE/2;
       ctx.beginPath();
-      ctx.arc(300, 300, this.r, (Math.PI/(2/3)), this.rot, false);
-      ctx.lineWidth = 30;
+      ctx.arc(shift, shift, this.r, (Math.PI/(2/3)), this.rot, false);
+      ctx.lineWidth = getMinEdge()/2/10;
       ctx.strokeStyle = colors;
       ctx.stroke();
       ctx.save();
       ctx.fillStyle = background;
-      ctx.translate(300, 300);
+      ctx.translate(shift, shift);
       ctx.rotate(this.rot);
-      ctx.font = '14px Arial Rounded MT Bold';
-      var arcsTxtLocation = {
-        min: 268,
-        hrs: 233,
-        day: 197,
-        week: 158,
-        mon: 127,
-        yrs: 93
-      };
+      ctx.font = ((14/600) * getMinEdge()) + 'px Arial Rounded MT Bold';
       var d = new Date();
-      ctx.fillText(d.precentOf(this.class) * 100 | 0, arcsTxtLocation[this.class], -5);
+      ctx.fillText(d.precentOf(this.class) * 100 | 0, (this.r - (9/600)*minE), -5);
       ctx.restore();
     }
   }
@@ -58,14 +58,15 @@ window.natoClock = function(canvas, config) {
 
   var draw = function() {
     reset();
+    var minE = getMinEdge();
     ctx.fillStyle = txtcolor;
-    ctx.font = '12px Arial'
-    ctx.fillText('min', 274, 27);
-    ctx.fillText('hrs', 274, 63);
-    ctx.fillText('day', 273, 98);
-    ctx.fillText('week', 264, 134);
-    ctx.fillText('mon', 270, 168);
-    ctx.fillText('yrs', 274, 203);
+    ctx.font = ((12/600) * minE) + 'px Arial'
+    ctx.fillText('min', (274/600)*minE, minE/2 - bars[5].r + 4);
+    ctx.fillText('hrs', (274/600)*minE, minE/2 - bars[4].r + 4);
+    ctx.fillText('day', (274/600)*minE, minE/2 - bars[3].r + 4);
+    ctx.fillText('week', (264/600)*minE, minE/2 - bars[2].r + 4);
+    ctx.fillText('mon', (270/600)*minE, minE/2 - bars[1].r + 4);
+    ctx.fillText('yrs', (274/600)*minE, minE/2 - bars[0].r + 4);
 
     bars.forEach(function (bar) {
       var d = new Date();
@@ -77,42 +78,61 @@ window.natoClock = function(canvas, config) {
 
   var mainloop = function() {
     draw();
-    raf(mainloop);
+    rafid = raf(mainloop);
   }
+
+  var stop = function() {
+    window.cancelAnimationFrame(rafid);
+  }
+
+  var destroy = function() {
+    stop();
+    reset();
+  };
 
   var bars = [];
 
   /* just gonna hard-code these radius. */
 
-  bars.push(new Arc({
-    class: 'yrs',
-    radius: 100
-  }));
+  var arcGen = function () {
 
-  bars.push(new Arc({
-    class: 'mon',
-    radius: 135
-  }));
+    bars.push(new Arc({
+      class: 'yrs',
+      radius: (100/600) * getMinEdge()
+    }));
 
-  bars.push(new Arc({
-    class: 'week',
-    radius: 170
-  }));
+    bars.push(new Arc({
+      class: 'mon',
+      radius: (135/600) * getMinEdge()
+    }));
 
-  bars.push(new Arc({
-    class: 'day',
-    radius: 205
-  }));
+    bars.push(new Arc({
+      class: 'week',
+      radius: (170/600) * getMinEdge()
+    }));
 
-  bars.push(new Arc({
-    class: 'hrs',
-    radius: 240
-  }));
+    bars.push(new Arc({
+      class: 'day',
+      radius: (205/600) * getMinEdge()
+    }));
 
-  bars.push(new Arc({
-    class: 'min',
-    radius: 275
-  }));
+    bars.push(new Arc({
+      class: 'hrs',
+      radius: (240/600) * getMinEdge()
+    }));
 
-  return {start: mainloop};
-}
+    bars.push(new Arc({
+      class: 'min',
+      radius: (275/600) * getMinEdge()
+    }));
+
+  };
+
+  arcGen();
+
+  return {
+    start: mainloop,
+    stop: stop,
+    destroy: destroy,
+  };
+};
