@@ -33,6 +33,7 @@ var cfg = {
   noRafFps: 60, // RAF 不可用時的 FPS。
   txtcolor: 'rgba(255,255,255,0.5)', // 文本顏色。
   acceleration: 2.3, // 回彈的加速度。
+  dpiScale: 2, // DPI 倍數，可以用於添加 hidpi 支持。
   colors: {
     min: '#F25F5C',
     hrs: '#FF9B66',

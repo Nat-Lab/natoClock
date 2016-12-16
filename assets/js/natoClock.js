@@ -7,7 +7,8 @@ window.NatoClock = function(canvas, config) {
       colors = config.colors || {},
       background = config.background || '#333',
       txtcolor = config.txtcolor || 'rgba(255,255,255,0.5)',
-      acceleration = config.acceleration || 2.5;
+      acceleration = config.acceleration || 2.5,
+      dpiScale = config.dpiScale || 1;
 
   var rafid;
 
@@ -27,8 +28,16 @@ window.NatoClock = function(canvas, config) {
   /* get DOM element, and build our canvas */
   var ctx = canvas.getContext('2d');
 
+  width = width * dpiScale;
+  height = height * dpiScale;
+
   canvas.width = width;
   canvas.height = height;
+
+  if(dpiScale != 1) {
+    canvas.style.width = width/dpiScale;
+    canvas.style.height = height/dpiScale;
+  }
 
   /* Grapher: Graph our arc! */
   var Grapher = function(arc) {
