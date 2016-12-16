@@ -10,7 +10,10 @@
         background = config.background || '#333',
         txtcolor = config.txtcolor || 'rgba(255,255,255,0.5)',
         acceleration = config.acceleration || 2.5,
-        dpiScale = config.dpiScale || 1;
+        dpiScale = config.dpiScale || 1,
+        bounces = config.bounces || false;
+
+    console.log(bounces);
 
     var rafid;
 
@@ -153,8 +156,7 @@
       var update = function () { // code from @ljyloo, @magicnat edited.
         var d = new DateUtil(new Date());
         var newPercent = d.percentOf(unit) * 100;
-         if (d.isFinished(unit))
-           goBack = true;
+         if (d.isFinished(unit) && bounces) goBack = true;
          if (goBack) {
            k += frame;
            var de = (k / 100) * (k / 100) * g;
@@ -166,14 +168,10 @@
                percent = newPercent;
                goBack = false;
              }
-             else {
-               percent = 0.1;
-             }
+             else percent = 0.1;
            }
          }
-         else {
-           percent = newPercent;
-         }
+         else percent = newPercent;
       }
       getRot = function () {
         update();

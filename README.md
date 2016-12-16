@@ -30,6 +30,7 @@ var cfg = {
   background: '#333', // 畫布背景色
   noRafFps: 60, // RAF 不可用時的 FPS。
   txtcolor: 'rgba(255,255,255,0.5)', // 文本顏色。
+  bounces: true, // 開啟回彈？
   acceleration: 2.3, // 回彈的加速度。
   dpiScale: 2, // DPI 倍數，可以用於添加 hidpi 支持。
   colors: {
