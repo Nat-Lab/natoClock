@@ -8,49 +8,62 @@
 <canvas id="screen"></canvas>
 </body>
 <script>
-var makeNc = function () {
-  var size = innerWidth > innerHeight ? innerHeight : innerWidth,
-      left = Math.abs(innerWidth - size)/2,
-      top = Math.abs(innerHeight - size)/2;
+(function() {
+  document.body.onclick = function() {
+    var body = this;
+    ["webkit", "moz", "ms", "o", ""].forEach(function(pfx) {
+      if(body[pfx + 'RequestFullScreen']) body[pfx + 'RequestFullScreen']();
+    });
+    window.setTimeout(function () {
+      body.style.width = innerWidth;
+      body.style.height = innerHeight;
+    }, 500);
+  };
 
-  var disp = document.getElementById('screen');
-  disp.style.top = top;
-  disp.style.left = left;
+  var makeNc = function () {
+    var size = innerWidth > innerHeight ? innerHeight : innerWidth,
+        left = Math.abs(innerWidth - size)/2,
+        top = Math.abs(innerHeight - size)/2;
 
-  return new NatoClock(disp, {
-    width: size,
-    height: size,
-    background: '#333',
-    noRafFps: 60,
-    txtcolor: 'rgba(255,255,255,0.5)',
-    bounces: true,
-    acceleration: 1.2,
-    dpiScale: 2,
-    colors: {
-      min: '#F25F5C',
-      hrs: '#FF9B66',
-      day: '#FFE066',
-      week: '#70C1B3',
-      mon: '#158CAF',
-      yrs: '#7C6FDE'
-    },
-    targets: [
-      'min',
-      'hrs',
-      'day',
-      'week',
-      'mon',
-      'yrs'
-    ],
-    outerRadius: 275
-  });
-}
+    var disp = document.getElementById('screen');
+    disp.style.top = top;
+    disp.style.left = left;
 
-var nc = makeNc();
+    return new NatoClock(disp, {
+      width: size,
+      height: size,
+      background: '#333',
+      noRafFps: 60,
+      txtcolor: 'rgba(255,255,255,0.5)',
+      bounces: true,
+      acceleration: 1.2,
+      dpiScale: 2,
+      colors: {
+        min: '#F25F5C',
+        hrs: '#FF9B66',
+        day: '#FFE066',
+        week: '#70C1B3',
+        mon: '#158CAF',
+        yrs: '#7C6FDE'
+      },
+      targets: [
+        'min',
+        'hrs',
+        'day',
+        'week',
+        'mon',
+        'yrs'
+      ],
+      outerRadius: 275
+    });
+  }
 
-window.onresize = function () {
-  nc.destroy();
-  nc = makeNc();
-};
+  var nc = makeNc();
+
+  window.onresize = function () {
+    nc.destroy();
+    nc = makeNc();
+  };
+})();
 </script>
 </html>
