@@ -13,9 +13,10 @@
         dpiScale = config.dpiScale || 1,
         bounces = config.bounces || false,
         targets = config.targets || ['min', 'hrs', 'day', 'week', 'mon', 'yrs'],
-        outerRadius = config.outerRadius || 275;
+        outerRadius = config.outerRadius || 275,
+        showPercentage = config.showPercentage || false;
 
-    var rafid;
+    var rafid, raf_available;
 
     var getMinEdge = function () {
       return width > height ? height : width;
@@ -102,8 +103,9 @@
     /* requestAnimationFrame related works. */
     var getRaf = function () {
       var _raf = requestAnimationFrame || webkitRequestAnimationFrame || oRequestAnimationFrame || msRequestAnimationFrame;
+      raf_available = _raf ? true : false;
       return _raf || function(func) {
-        window.setTimeout(func, 1000 / (config.noRafFps || 60));
+        return window.setTimeout(func, 1000 / (config.noRafFps || 60));
       }
     };
     var raf = getRaf();
@@ -127,21 +129,28 @@
       var minE = getMinEdge(),
           shift = minE/2,
           rot = arc.getRot();
+
+      /* Arc Bar */
       ctx.beginPath();
       ctx.arc(shift, shift, arc.r, (Math.PI/(2/3)), rot, false);
       ctx.lineWidth = getMinEdge()/2/10;
       ctx.strokeStyle = arc.color;
       ctx.stroke();
       ctx.save();
-      ctx.fillStyle = background;
-      ctx.translate(shift, shift);
-      ctx.rotate(rot);
-      ctx.font = ((14/600) * getMinEdge()) + 'px Arial Rounded MT Bold';
-      var d = new DateUtil(new Date()),
-          p = d.percentOf(arc.class) * 100 | 0,
-          tS = p >= 10 ? 8.5 : 5.5;
-      if(p > 0) ctx.fillText(p, (arc.r - (tS/600)*minE), (-5/600)*minE);
-      ctx.restore();
+
+      /* Status text */
+      if (showPercentage) {
+        ctx.fillStyle = background;
+        ctx.translate(shift, shift);
+        ctx.rotate(rot);
+        ctx.font = ((14/600) * getMinEdge()) + 'px Arial Rounded MT Bold';
+        var d = new DateUtil(new Date()),
+            p = d.percentOf(arc.class) * 100 | 0,
+            tS = p >= 10 ? 8.5 : 5.5;
+        if(p > 0) ctx.fillText(p, (arc.r - (tS/600)*minE), (-5/600)*minE);
+        ctx.restore();
+      }
+
     }
 
     var Labeler = function (arc) {
@@ -211,7 +220,8 @@
     }
 
     var stop = function() {
-      window.cancelAnimationFrame(rafid);
+      if(raf_available) window.cancelAnimationFrame(rafid);
+      else window.clearTimeout(rafid);
     }
 
     var destroy = function() {
