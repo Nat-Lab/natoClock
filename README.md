@@ -15,14 +15,13 @@ natoClock
 <canvas id="display"></canvas>
 ```
 
-創建一個 natoClock 實例，開始繪圖：
+創建一個 natoClock 實例，就會在畫布內開始繪製時鐘：
 
 ```javascript
 var nc = new NatoClock(document.getElementById('display'));
-nc.start();
 ```
 
-NatoClock 構造器接受兩個參數，第一個是 canvas 的元素，第二個是配置：
+NatoClock 構造器接受兩個參數，第一個是 canvas 的元素，第二個是配置，配置是可選的，不提供配置會讓 NatoClock 以默認方式繪圖：
 
 ```javascript
 var cfg = {
@@ -44,11 +43,29 @@ var cfg = {
 };
 
 var nc = new NatoClock(document.getElementById('display'), cfg);
-nc.start();
-
 ```
 
 要暫停繪製，使用：`nc.stop();`，要清空畫布並停止繪製，使用`nc.destroy();`。
+
+妳亦可以在 jQuery 或者 AngularJS 中使用 NatoClock：
+
+jQuery:
+
+```javascript
+$('#display').NatoClock(cfg); // cfg 是配置對象，同上文。
+```
+
+AngularJS:
+
+```html
+<div ng-app="app">
+  <nato-clock nc-cfg="{ ... // 配置對象。 }"></nato-clock>
+</div>
+<script>
+angular.module('app', ['NatoClock']);
+</script>
+```
+
 
 ### 致谢
 

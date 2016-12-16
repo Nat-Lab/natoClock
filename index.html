@@ -37,12 +37,10 @@ var makeNc = function () {
 }
 
 var nc = makeNc();
-nc.start();
 
 window.onresize = function () {
   nc.destroy();
   nc = makeNc();
-  nc.start();
 };
 </script>
 </html>
