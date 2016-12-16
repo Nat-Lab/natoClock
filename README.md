@@ -40,7 +40,16 @@ var cfg = {
     week: '#70C1B3',
     mon: '#158CAF',
     yrs: '#7C6FDE'
-  } // 每條進度條的顏色。妳亦可以制定一個 color 屬性代替這個 colors 對象，這樣所有的條進度都會是一個顏色。
+  }, // 每條進度條的顏色。妳亦可以制定一個 color 屬性代替這個 colors 對象，這樣所有的條進度都會是一個顏色。
+  targets: [
+    'min',
+    'hrs',
+    'day',
+    'week',
+    'mon',
+    'yrs'
+  ], // 要繪製的目標。這裡已經列出了所有可能的項目。
+  outerRadius: 275 // 最外圈的大小。每一圈的大小會遞減 35。
 };
 
 var nc = new NatoClock(document.getElementById('display'), cfg);

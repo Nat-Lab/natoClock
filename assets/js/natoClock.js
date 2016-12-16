@@ -11,7 +11,9 @@
         txtcolor = config.txtcolor || 'rgba(255,255,255,0.5)',
         acceleration = config.acceleration || 2.5,
         dpiScale = config.dpiScale || 1,
-        bounces = config.bounces || false;
+        bounces = config.bounces || false,
+        targets = config.targets || ['min', 'hrs', 'day', 'week', 'mon', 'yrs'],
+        outerRadius = config.outerRadius || 275;
 
     console.log(bounces);
 
@@ -144,6 +146,15 @@
       ctx.restore();
     }
 
+    var Labeler = function (arc) {
+      var minE = getMinEdge(),
+          name = arc.class,
+          lft = (274 + (name.length - 3 < 0 ? 0 : name.length - 3) * -5);
+      ctx.fillStyle = txtcolor;
+      ctx.font = ((11/600) * minE) + 'px Monaco';
+      ctx.fillText(name, (lft/600)*minE, minE/2 - arc.r + 4/600*minE);
+    };
+
     /* arc constructor: build our arcs! */
     var Arc = function (_config) {
       var unit = _config.class,
@@ -192,15 +203,7 @@
 
     var draw = function() {
       reset();
-      var minE = getMinEdge();
-      ctx.fillStyle = txtcolor;
-      ctx.font = ((12/600) * minE) + 'px Arial'
-      ctx.fillText('min', (274/600)*minE, minE/2 - bars[5].r + 4);
-      ctx.fillText('hrs', (274/600)*minE, minE/2 - bars[4].r + 4);
-      ctx.fillText('day', (274/600)*minE, minE/2 - bars[3].r + 4);
-      ctx.fillText('week', (264/600)*minE, minE/2 - bars[2].r + 4);
-      ctx.fillText('mon', (270/600)*minE, minE/2 - bars[1].r + 4);
-      ctx.fillText('yrs', (274/600)*minE, minE/2 - bars[0].r + 4);
+      bars.map(Labeler);
       bars.map(Grapher);
     }
 
@@ -224,41 +227,17 @@
 
     var arcGen = function () {
 
-      bars.push(new Arc({
-        class: 'yrs',
-        radius: (100/600) * getMinEdge(),
-        color: colors.yrs || color
-      }));
+      var _radius = outerRadius + 35;
 
-      bars.push(new Arc({
-        class: 'mon',
-        radius: (135/600) * getMinEdge(),
-        color: colors.mon || color
-      }));
-
-      bars.push(new Arc({
-        class: 'week',
-        radius: (170/600) * getMinEdge(),
-        color: colors.week || color
-      }));
-
-      bars.push(new Arc({
-        class: 'day',
-        radius: (205/600) * getMinEdge(),
-        color: colors.day || color
-      }));
-
-      bars.push(new Arc({
-        class: 'hrs',
-        radius: (240/600) * getMinEdge(),
-        color: colors.hrs || color
-      }));
-
-      bars.push(new Arc({
-        class: 'min',
-        radius: (275/600) * getMinEdge(),
-        color: colors.min || color
-      }));
+      for(var i = 0; i < targets.length; i++) {
+        var target = targets[i],
+            radius = (_radius -= 35);
+        bars.push(new Arc({
+          class: target,
+          radius: (radius/600) * getMinEdge(),
+          color: colors[target]
+        }));
+      }
 
     };
 
