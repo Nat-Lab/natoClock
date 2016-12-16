@@ -14,7 +14,9 @@
         bounces = config.bounces || false,
         targets = config.targets || ['min', 'hrs', 'day', 'week', 'mon', 'yrs'],
         outerRadius = config.outerRadius || 275,
-        showPercentage = config.showPercentage || false;
+        showPercentage = config.showPercentage || false,
+        statusFont = config.statusFont || 'Monaco',
+        labelFont = config.labelFont || 'Monaco';
 
     var rafid, raf_available;
 
@@ -133,7 +135,7 @@
       /* Arc Bar */
       ctx.beginPath();
       ctx.arc(shift, shift, arc.r, (Math.PI/(2/3)), rot, false);
-      ctx.lineWidth = getMinEdge()/2/10;
+      ctx.lineWidth = getMinEdge()/20;
       ctx.strokeStyle = arc.color;
       ctx.stroke();
       ctx.save();
@@ -143,24 +145,31 @@
         ctx.fillStyle = background;
         ctx.translate(shift, shift);
         ctx.rotate(rot);
-        ctx.font = ((14/600) * getMinEdge()) + 'px Arial Rounded MT Bold';
+        ctx.font = ((14/600) * getMinEdge()) + 'px ' + statusFont;
         var d = new DateUtil(new Date()),
             p = d.percentOf(arc.class) * 100 | 0,
-            tS = p >= 10 ? 8.5 : 5.5;
-        if(p > 0) ctx.fillText(p, (arc.r - (tS/600)*minE), (-5/600)*minE);
+            tS = (minE/20 - ctx.measureText(p).width)/2;
+        if(p > 0) ctx.fillText(p, arc.r - minE/40 + tS, (-5/600) * minE);
         ctx.restore();
       }
 
     }
 
-    var Labeler = function (arc) {
-      var minE = getMinEdge(),
-          name = arc.class,
-          lft = (274 + (name.length - 3 < 0 ? 0 : name.length - 3) * -5);
+    var Labeler = function (arcs) {
+      var minE = getMinEdge();
+      ctx.font = ((11/600) * minE) + 'px ' + labelFont;
       ctx.fillStyle = txtcolor;
-      ctx.font = ((11/600) * minE) + 'px Monaco';
-      ctx.fillText(name, (lft/600)*minE, minE/2 - arc.r + 4/600*minE);
-    };
+      var maxWidth = 0;
+      for (var i = 0; i < arcs.length; i++) {
+        var w = ctx.measureText(arcs.class).width;
+        maxWidth = w > maxWidth ? w : maxWidth;
+      }
+      arcs.forEach(function (arc) {
+        var name = arc.class,
+            lft = width/2 - maxWidth/4 - ctx.measureText(name).width;
+        ctx.fillText(name, lft, minE/2 - arc.r + 4/600 * minE);
+      });
+    }
 
     /* arc constructor: build our arcs! */
     var Arc = function (_config) {
@@ -210,7 +219,7 @@
 
     var draw = function() {
       reset();
-      bars.map(Labeler);
+      Labeler(bars);
       bars.map(Grapher);
     }
 
