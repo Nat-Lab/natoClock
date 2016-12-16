@@ -135,7 +135,7 @@ window.NatoClock = function(canvas, config) {
     var d = new DateUtil(new Date()),
         p = d.percentOf(arc.class) * 100 | 0,
         tS = p >= 10 ? 8.5 : 5.5;
-    if(p > 0) ctx.fillText(p, (arc.r - (tS/600)*minE), -5);
+    if(p > 0) ctx.fillText(p, (arc.r - (tS/600)*minE), (-5/600)*minE);
     ctx.restore();
   }
 
