@@ -15,8 +15,6 @@
         targets = config.targets || ['min', 'hrs', 'day', 'week', 'mon', 'yrs'],
         outerRadius = config.outerRadius || 275;
 
-    console.log(bounces);
-
     var rafid;
 
     var getMinEdge = function () {
@@ -223,8 +221,6 @@
 
     var bars = [];
 
-    /* just gonna hard-code these radius. */
-
     var arcGen = function () {
 
       var _radius = outerRadius + 35;
@@ -235,7 +231,7 @@
         bars.push(new Arc({
           class: target,
           radius: (radius/600) * getMinEdge(),
-          color: colors[target]
+          color: colors[target] || color
         }));
       }
 
