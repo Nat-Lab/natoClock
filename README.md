@@ -3,10 +3,9 @@ natoClock
 
 [一個大大的，百進制的時鐘。](http://lab.nat.moe/natoClock/)
 
-用法：引入 `assets/js/advanceDate.js` 與 `assets/js/natoClock.js`：
+用法：引入 `assets/js/natoClock.js`：
 
 ```html
-<script src="assets/js/advanceDate.js"></script>
 <script src="assets/js/natoClock.js"></script>
 ```
 

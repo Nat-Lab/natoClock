@@ -16,6 +16,84 @@ window.NatoClock = function(canvas, config) {
     return width > height ? height : width;
   }
 
+  /* DateUtil: extented date */
+  var DateUtil = function (d) {
+    this.getSeconds = function () {
+      return d.getSeconds();
+    }
+
+    this.isLeapYear = function () {
+      var year = d.getFullYear();
+      if((year & 3) != 0) return false;
+      return ((year % 100) != 0 || (year % 400) == 0);
+    };
+
+    this.getYearDays =  function () {
+      return this.isLeapYear() ? 366 : 365;
+    };
+
+    this.getMonthDays = function () {
+      var _d = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+      return _d.getDate();
+    };
+
+    this.getDayOfYear = function() {
+      var dayCount = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+      var mn = d.getMonth();
+      var dn = d.getDate();
+      var dayOfYear = dayCount[mn] + dn;
+      if(mn > 1 && this.isLeapYear()) dayOfYear++;
+      return dayOfYear;
+    };
+
+    this.getMillisecondsOfMinutes = function () {
+      return d.getMilliseconds() + 1000 * d.getSeconds() - 1;
+    };
+
+    this.getSecondsOfHour = function() {
+      return d.getSeconds() + 60 * d.getMinutes();
+    };
+
+    this.getSecondsOfDay = function() {
+      return d.getSeconds() + (60 * d.getMinutes()) + (3600 * d.getHours());
+    };
+
+    this.getSecondsOfWeek = function() {
+      var day = d.getDay();
+      day = (day == 0 ? 7 : day);
+      return this.getSecondsOfDay() + 86400 * (day - 1);
+    };
+
+    this.getSecondsOfMonth = function() {
+      return this.getSecondsOfDay() + 86400 * (d.getDate() - 1);
+    };
+
+    this.getSecondsOfYear = function () {
+      return this.getSecondsOfDay() + 86400 * (this.getDayOfYear() - 1);
+    };
+
+    this.percentOf = function(unit) {
+      var percent = function(part, full) { return part == 0 ? 0 : (full/part) };
+      if (unit == 'min') return percent(60000, d.getMilliseconds() + 1000 * d.getSeconds());
+      if (unit == 'hrs') return percent(3600, this.getSecondsOfHour());
+      if (unit == 'day') return percent(3600 * 24, this.getSecondsOfDay());
+      if (unit == 'week') return percent(86400 * 7, this.getSecondsOfWeek());
+      if (unit == 'mon') return percent(this.getMonthDays() * 86400, this.getSecondsOfMonth());
+      if (unit == 'yrs') return percent(this.getYearDays() * 86400, this.getSecondsOfYear());
+    };
+
+    this.isFinished = function (unit) {
+      if (unit == 'min') return (d.getSeconds() >= 59 && d.getMilliseconds() >= 950);
+      if (unit == 'hrs') return (this.getSecondsOfHour() >= 3599 && d.getMilliseconds() >= 950);
+      if (unit == 'day') return (this.getSecondsOfDay() >= 86399 && d.getMilliseconds() >= 950);
+      if (unit == 'week') return (this.getSecondsOfWeek() >= 604799 && d.getMilliseconds() >= 950);
+      if (unit == 'mon') return (this.getSecondsOfMonth() >= ((this.getMonthDays() * 86400) - 1) && d.getMilliseconds() >= 950);
+      if (unit == 'yrs') return (this.getSecondsOfYear() >= ((this.getYearDays() * 86400) - 1) && d.getMilliseconds() >= 950);
+    };
+
+    return this;
+  };
+
   /* requestAnimationFrame related works. */
   var getRaf = function () {
     var _raf = requestAnimationFrame || webkitRequestAnimationFrame || oRequestAnimationFrame || msRequestAnimationFrame;
@@ -54,7 +132,7 @@ window.NatoClock = function(canvas, config) {
     ctx.translate(shift, shift);
     ctx.rotate(rot);
     ctx.font = ((14/600) * getMinEdge()) + 'px Arial Rounded MT Bold';
-    var d = new Date(),
+    var d = new DateUtil(new Date()),
         p = d.percentOf(arc.class) * 100 | 0,
         tS = p >= 10 ? 8.5 : 5.5;
     if(p > 0) ctx.fillText(p, (arc.r - (tS/600)*minE), -5);
@@ -71,7 +149,7 @@ window.NatoClock = function(canvas, config) {
         g = acceleration,
         goBack = false;
     var update = function () { // code from @ljyloo, @magicnat edited.
-      var d = new Date();
+      var d = new DateUtil(new Date());
       var newPercent = d.percentOf(unit) * 100;
        if (d.isFinished(unit))
          goBack = true;
