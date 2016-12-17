@@ -3,22 +3,33 @@
   var NatoClock = function(canvas, config) {
     config = config || {};
     var frame = 100 / 60;
-    var width = config.width || 500,
-        height = config.height || 500,
-        color = config.color || '#fefefe',
-        colors = config.colors || {},
-        background = config.background || '#333',
-        txtcolor = config.txtcolor || 'rgba(255,255,255,0.5)',
-        acceleration = config.acceleration || 2.5,
-        dpiScale = config.dpiScale || 1,
-        bounces = config.bounces || false,
+    var canvasCfg = config.canvas || {},
+        barsCfg = config.bars || {},
+        fontsCfg = config.fonts || {},
+        renderCfg = config.render || {};
+
+    var width = canvasCfg.width || 500,
+        height = canvasCfg.height || 500,
+        color = barsCfg.color || '#fefefe',
+        colors = barsCfg.colors || {},
+        fontColors = fontsCfg.colors || {},
+        background = canvasCfg.background || '#333',
+        txtcolor = fontColors.label || 'rgba(255,255,255,0.5)',
+        statusColor = fontColors.status || background,
+        acceleration = barsCfg.acceleration || 2.5,
+        dpiScale = renderCfg.dpiScale || 1,
+        bounces = barsCfg.bounces || false,
         targets = config.targets || ['min', 'hrs', 'day', 'week', 'mon', 'yrs'],
-        outerRadius = config.outerRadius || 275,
-        showPercentage = config.showPercentage || false,
-        statusFont = config.statusFont || 'Monaco',
-        labelFont = config.labelFont || 'Monaco',
-        showFps = config.showFps || false,
-        maxFps = config.maxFps || 60;
+        statusFont = fontsCfg.status || 'Monaco',
+        labelFont = fontsCfg.label || 'Monaco',
+        showFps = renderCfg.showFps || false,
+        maxFps = renderCfg.maxFps || 60,
+        barsConfig = config.bars || {},
+        barsWidth = barsConfig.width || 30,
+        barsMargin = barsConfig.margin || 5,
+        outerRadius = barsConfig.outerRadius || 275,
+        showPercentage = barsConfig.percentage || false,
+        showLabel = barsConfig.label || false;
 
     var rafid, raf_available;
     var startTime, frameCount = 0, pFrameCount = 0, fps = 0, pFps = 0, maxWidth = 0;
@@ -135,7 +146,7 @@
         lblSize = ((11/600) * minE),
         statusSize = ((14/600) * minE),
         statusYOffset = (-5/600) * minE,
-        barWidth = minE/20,
+        barWidth = barsWidth/600 * minE,
         shiftX = width/2,
         shiftY = height/2,
         lblShiftX = shiftX - 14/600 * minE,
@@ -158,7 +169,7 @@
 
       /* Status text */
       if (showPercentage) {
-        ctx.fillStyle = background;
+        ctx.fillStyle = statusColor;
         ctx.translate(shiftX, shiftY);
         ctx.rotate(rot);
         ctx.font = statusSize + 'px ' + statusFont;
@@ -228,7 +239,8 @@
     var draw = function(time) {
       reset();
 
-      if(config.showFps) {
+      if(showFps) {
+        console.log();
         var utilization = Math.round((frameCount/pFrameCount)*100),
             targ = Math.round((fps/maxFps)*100),
             _loss = Math.round((1-pFps/maxFps)*100),
@@ -237,7 +249,7 @@
         ctx.fillStyle = txtcolor;
         ctx.fillText(Math.round(fps) + '/' + Math.round(pFps) + ' fps (' + utilization + '% utilization, ' + targ + '% target, ' + loss + '% loss), limit ' + maxFps + ' fps.', .02 * minE, .03 * minE);
       }
-      Labeler(bars);
+      if(showLabel) Labeler(bars);
       bars.map(Grapher);
     }
 
@@ -278,13 +290,14 @@
 
     var arcGen = function () {
 
-      var _radius = outerRadius + 35;
+      var barDec = barsWidth + barsMargin;
+      var _radius = outerRadius + barDec;
 
       maxWidth = (outerRadius/600) * minE;
 
       for(var i = 0; i < targets.length; i++) {
         var target = targets[i],
-            radius = (_radius -= 35);
+            radius = (_radius -= barDec);
         bars.push(new Arc({
           class: target,
           radius: (radius/600) * minE,
