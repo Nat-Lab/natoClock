@@ -131,7 +131,7 @@
     var Grapher = function(arc) {
       var shiftX = width/2,
           shiftY = height/2,
-          rot = arc.getRot();
+          rot = arc.getPercent() * 0.01 * (Math.PI * 2) - (Math.PI / 2);
 
       /* Arc Bar */
       ctx.beginPath();
@@ -147,8 +147,7 @@
         ctx.translate(shiftX, shiftY);
         ctx.rotate(rot);
         ctx.font = ((14/600) * minE) + 'px ' + statusFont;
-        var d = new DateUtil(new Date()),
-            p = d.percentOf(arc.class) * 100 | 0,
+        var p = arc.getPercent() | 0,
             tS = (minE/20 - ctx.measureText(p).width)/2;
         if(p > 0) ctx.fillText(p, arc.r - minE/40 + tS, (-5/600) * minE);
         ctx.restore();
@@ -167,7 +166,7 @@
       arcs.forEach(function (arc) {
         var name = arc.class,
             lft = width/2 - maxWidth/4 - ctx.measureText(name).width;
-        ctx.fillText(name, lft, minE/2 - arc.r + 4/600 * minE);
+        ctx.fillText(name, lft, height/2 - arc.r + 4/600 * minE);
       });
     }
 
@@ -200,13 +199,13 @@
          }
          else percent = newPercent;
       }
-      getRot = function () {
+      getPercent = function () {
         update();
-        return percent * 0.01 * (Math.PI * 2) - (Math.PI / 2);
+        return percent;
       }
       return {
-        getRot: getRot,
         class: unit,
+        getPercent: getPercent,
         color: color,
         r: r
       };
