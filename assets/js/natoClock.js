@@ -312,6 +312,14 @@
 
     startTime = Date.now();
 
+    window.onblur = function () {
+      window.onfocus = function () {
+        fps = pFps = pFrameCount = frameCount = 0;
+        startTime = Date.now();
+        window.onfocus = undefined;
+      }
+    };
+
     return {
       stop: stop,
       destroy: destroy,
