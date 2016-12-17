@@ -53,7 +53,8 @@ var cfg = {
   showPercentage: true, // 在圓弧上顯示百分比？
   statusFont: 'nunitobold', // 圓弧進度數字的字體。
   labelFont: 'nunitobold', // 標籤字體。
-  showFps: false // 顯示 FPS。
+  showFps: false, // 顯示 FPS。
+  maxFps: 45 // 限制最大 FPS。
 };
 
 var nc = new NatoClock(document.getElementById('display'), cfg);

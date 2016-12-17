@@ -17,7 +17,8 @@
         showPercentage = config.showPercentage || false,
         statusFont = config.statusFont || 'Monaco',
         labelFont = config.labelFont || 'Monaco',
-        showFps = config.showFps;
+        showFps = config.showFps || false,
+        maxFps = config.maxFps || 60;
 
     var rafid, raf_available;
     var startTime, frameCount = 0, fps = 0;
@@ -128,12 +129,13 @@
 
     /* Grapher: Graph our arc! */
     var Grapher = function(arc) {
-      var shift = minE/2,
+      var shiftX = width/2,
+          shiftY = height/2,
           rot = arc.getRot();
 
       /* Arc Bar */
       ctx.beginPath();
-      ctx.arc(shift, shift, arc.r, (Math.PI/(2/3)), rot, false);
+      ctx.arc(shiftX, shiftY, arc.r, (Math.PI/(2/3)), rot, false);
       ctx.lineWidth = minE/20;
       ctx.strokeStyle = arc.color;
       ctx.stroke();
@@ -142,7 +144,7 @@
       /* Status text */
       if (showPercentage) {
         ctx.fillStyle = background;
-        ctx.translate(shift, shift);
+        ctx.translate(shiftX, shiftY);
         ctx.rotate(rot);
         ctx.font = ((14/600) * minE) + 'px ' + statusFont;
         var d = new DateUtil(new Date()),
@@ -221,11 +223,13 @@
       if(config.showFps) {
         ctx.font = ((11/600) * minE) + 'px Monaco';
         ctx.fillStyle = txtcolor;
-        ctx.fillText((fps|0) + ' fps (' + frameCount + ' frames in ' + (time|0) + ' ms)', .03 * minE, .03 * minE);
+        ctx.fillText((fps|0) + ' fps (' + frameCount + ' frames in ' + (time|0) + ' ms), limit ' + maxFps + ' fps.', .02 * minE, .03 * minE);
       }
       Labeler(bars);
       bars.map(Grapher);
     }
+
+    var now, then = Date.now(), interval = 1000/maxFps, delta;
 
     var mainloop = function() {
       /* Frame Rate is not always 60. This makes bounces unpredictable.
@@ -235,13 +239,22 @@
        * Also, what if we have other raf there?
        */
 
-      // TODO: what if browser stop animate it self? need some way to calcutale real FPS rather then getting an average.
-      frameCount++;
-      time = Date.now() - startTime;
-      fps = frameCount*1000/time;
-      frame = 100/fps;
-      draw(time);
       rafid = raf(mainloop);
+
+      // TODO: what if browser stop animate it self? need some way to calcutale real FPS rather then getting an average.
+
+      now = Date.now();
+      delta = now - then;
+
+      if (delta > interval) {
+        then = now - (delta % interval);
+
+        frameCount++;
+        time = Date.now() - startTime;
+        fps = frameCount*1000/time;
+        frame = 100/fps;
+        draw(time);
+      }
     }
 
     var stop = function() {

@@ -21,17 +21,19 @@
   };
 
   var makeNc = function () {
-    var size = innerWidth > innerHeight ? innerHeight : innerWidth,
+    /*var size = innerWidth > innerHeight ? innerHeight : innerWidth,
         left = Math.abs(innerWidth - size)/2,
         top = Math.abs(innerHeight - size)/2;
 
     var disp = document.getElementById('screen');
     disp.style.top = top;
-    disp.style.left = left;
+    disp.style.left = left;*/
+
+    var disp = document.getElementById('screen');
 
     return new NatoClock(disp, {
-      width: size,
-      height: size,
+      width: innerWidth,
+      height: innerHeight,
       background: '#333',
       noRafFps: 60,
       txtcolor: 'rgba(255,255,255,0.5)',
@@ -58,7 +60,8 @@
       showPercentage: true,
       statusFont: 'nunitobold',
       labelFont: 'Helvetica Neue',
-      showFps: true
+      showFps: true,
+      maxFps: 45
     });
   }
 
