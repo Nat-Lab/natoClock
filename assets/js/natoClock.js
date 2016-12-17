@@ -16,13 +16,11 @@
         outerRadius = config.outerRadius || 275,
         showPercentage = config.showPercentage || false,
         statusFont = config.statusFont || 'Monaco',
-        labelFont = config.labelFont || 'Monaco';
+        labelFont = config.labelFont || 'Monaco',
+        showFps = config.showFps;
 
     var rafid, raf_available;
-
-    var getMinEdge = function () {
-      return width > height ? height : width;
-    }
+    var startTime, frameCount = 0, fps = 0;
 
     /* DateUtil: extented date */
     var DateUtil = function (d) {
@@ -118,6 +116,8 @@
     width = width * dpiScale;
     height = height * dpiScale;
 
+    var minE = width > height ? height : width;
+
     canvas.width = width;
     canvas.height = height;
 
@@ -128,14 +128,13 @@
 
     /* Grapher: Graph our arc! */
     var Grapher = function(arc) {
-      var minE = getMinEdge(),
-          shift = minE/2,
+      var shift = minE/2,
           rot = arc.getRot();
 
       /* Arc Bar */
       ctx.beginPath();
       ctx.arc(shift, shift, arc.r, (Math.PI/(2/3)), rot, false);
-      ctx.lineWidth = getMinEdge()/20;
+      ctx.lineWidth = minE/20;
       ctx.strokeStyle = arc.color;
       ctx.stroke();
       ctx.save();
@@ -145,7 +144,7 @@
         ctx.fillStyle = background;
         ctx.translate(shift, shift);
         ctx.rotate(rot);
-        ctx.font = ((14/600) * getMinEdge()) + 'px ' + statusFont;
+        ctx.font = ((14/600) * minE) + 'px ' + statusFont;
         var d = new DateUtil(new Date()),
             p = d.percentOf(arc.class) * 100 | 0,
             tS = (minE/20 - ctx.measureText(p).width)/2;
@@ -156,7 +155,6 @@
     }
 
     var Labeler = function (arcs) {
-      var minE = getMinEdge();
       ctx.font = ((11/600) * minE) + 'px ' + labelFont;
       ctx.fillStyle = txtcolor;
       var maxWidth = 0;
@@ -217,14 +215,32 @@
       ctx.fillRect(0, 0, width, height);
     }
 
-    var draw = function() {
+    var draw = function(time) {
       reset();
+
+      if(config.showFps) {
+        ctx.font = ((11/600) * minE) + 'px Monaco';
+        ctx.fillStyle = txtcolor;
+        ctx.fillText((fps|0) + ' fps (' + frameCount + ' frames in ' + (time|0) + ' ms)', .03 * minE, .03 * minE);
+      }
       Labeler(bars);
       bars.map(Grapher);
     }
 
     var mainloop = function() {
-      draw();
+      /* Frame Rate is not always 60. This makes bounces unpredictable.
+       * so we need to measure frame rate.
+       * why not DOMHighResTimeStamp? cuz even if we re-construct NatoClock
+       * object, the time given by raf call was since the first one.
+       * Also, what if we have other raf there?
+       */
+
+      // TODO: what if browser stop animate it self? need some way to calcutale real FPS rather then getting an average.
+      frameCount++;
+      time = Date.now() - startTime;
+      fps = frameCount*1000/time;
+      frame = 100/fps;
+      draw(time);
       rafid = raf(mainloop);
     }
 
@@ -249,7 +265,7 @@
             radius = (_radius -= 35);
         bars.push(new Arc({
           class: target,
-          radius: (radius/600) * getMinEdge(),
+          radius: (radius/600) * minE,
           color: colors[target] || color
         }));
       }
@@ -258,6 +274,8 @@
 
     arcGen();
     mainloop();
+
+    startTime = Date.now();
 
     return {
       stop: stop,

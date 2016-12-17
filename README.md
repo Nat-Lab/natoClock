@@ -52,7 +52,8 @@ var cfg = {
   outerRadius: 275, // 最外圈的大小。每一圈的大小會遞減 35。
   showPercentage: true, // 在圓弧上顯示百分比？
   statusFont: 'nunitobold', // 圓弧進度數字的字體。
-  labelFont: 'nunitobold' // 標籤字體。
+  labelFont: 'nunitobold', // 標籤字體。
+  showFps: false // 顯示 FPS。
 };
 
 var nc = new NatoClock(document.getElementById('display'), cfg);
