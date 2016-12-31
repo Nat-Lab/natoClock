@@ -57,7 +57,7 @@
       this.getMonthDays = function () {
         var m = d.getMonth();
         var _dc = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-        return m != 2 ? _dc[m-1]
+        return m != 2 ? _dc[m]
                       : this.isLeapYear() ? 29 : 28;
       };
 
